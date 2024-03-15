@@ -520,7 +520,6 @@ export default {
   },
   indent: {
     description: 'Indent',
-    key: 'Tab',
     readOnly: true,
   },
   blockoutdent: {
@@ -589,5 +588,5 @@ export default {
   resetFontSize: {
     description: 'Reset font size',
     bindKey: 'Ctrl+0|Ctrl-Numpad0',
-  },
+  }
 };

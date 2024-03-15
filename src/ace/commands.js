@@ -204,6 +204,23 @@ const commands = [
     multiSelectAction: 'forEach',
   },
   {
+    name: 'escape',
+    description: 'Escape',
+    immutable: true,
+    bindKey: { win: 'Esc' },
+    exec() {
+      acode.exec('escape-key');
+    }
+  },
+  {
+    name: 'indent',
+    description: 'Code completion, Emmet expand or indent',
+    readonly: true,
+    exec() {
+      acode.exec('tab-key');
+    },
+  },
+  {
     name: 'paste',
     description: 'Paste',
     exec() {
@@ -295,8 +312,10 @@ export async function setKeyBindings({ commands }) {
     }
 
     // not chekiang if shortcut is empty because it can be used to remove shortcut
-    command.bindKey = { win: shortcut?.key ?? null };
-    commands.addCommand(command);
+    if (!command.immutable) {
+      command.bindKey = { win: shortcut?.key ?? null };
+      commands.addCommand(command);
+    }
   });
 }
 

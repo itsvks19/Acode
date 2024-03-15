@@ -25,8 +25,24 @@ import prompt from 'dialogs/prompt';
 import color from 'dialogs/color';
 import { getColorRange } from 'utils/color/regex';
 import Problems from 'pages/problems/problems';
+import aiCompletion from './aiCompletion';
 
 export default {
+  'tab-key'() {
+    const res = aiCompletion.insertCompletion();
+    if (!res) {
+      editorManager.editor.indent();
+    }
+  },
+  'escape-key'() {
+    const res = aiCompletion.clearCompletion();
+    if (!res) return;
+
+    editorManager.editor.completer.detach();
+    const selections = editorManager.editor.selection.getAllRanges();
+    const pos = selections[0].start;
+    editorManager.editor.moveCursorToPosition(pos);
+  },
   async 'close-all-tabs'() {
     let save = false;
     const unsavedFiles = editorManager.files.filter((file) => file.isUnsaved).length;

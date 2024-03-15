@@ -13,6 +13,7 @@ import { scrollAnimationFrame } from 'ace/touchHandler';
 import { setCommands, setKeyBindings } from 'ace/commands';
 import { HARDKEYBOARDHIDDEN_NO, getSystemConfiguration } from './systemConfiguration';
 import SideButton, { sideButtonContainer } from 'components/sideButton';
+import aiCompletion from './aiCompletion';
 
 //TODO: Add option to work multiple files at same time in large display.
 
@@ -273,6 +274,7 @@ async function EditorManager($header, $body) {
     });
 
     editor.on('blur', async () => {
+      aiCompletion.clearCompletion();
       const { hardKeyboardHidden, keyboardHeight } = await getSystemConfiguration();
       const blur = () => {
         const { activeFile } = manager;
@@ -294,6 +296,7 @@ async function EditorManager($header, $body) {
     });
 
     editor.on('change', (e) => {
+      aiCompletion();
       if (checkTimeout) clearTimeout(checkTimeout);
       if (autosaveTimeout) clearTimeout(autosaveTimeout);
 
@@ -315,6 +318,7 @@ async function EditorManager($header, $body) {
             }, autosave);
           }
         }
+
         activeFile.markChanged = true;
       }, TIMEOUT_VALUE);
     });
@@ -327,6 +331,10 @@ async function EditorManager($header, $body) {
       scrollTimeout = setTimeout(() => {
         isScrolling = false;
       }, 100);
+    });
+
+    editor.on('changeCursor', () => {
+      aiCompletion.clearCompletion();
     });
 
     editor.renderer.on('resize', () => {
